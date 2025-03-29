@@ -1,6 +1,5 @@
 package io.github.kez_lab.kotlinxrpc.sample.ui.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
@@ -24,23 +24,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.kez_lab.kotlinxrpc.sample.NewsViewModel
 import io.github.kez_lab.kotlinxrpc.sample.model.News
+import io.github.kez_lab.kotlinxrpc.sample.ui.component.RemoteImage
 
 @Composable
 fun NewsListScreen(viewModel: NewsViewModel) {
     val newsList by viewModel.newsList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
-    
+
     LaunchedEffect(Unit) {
         viewModel.fetchNews()
     }
-    
+
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             isLoading -> {
@@ -48,6 +49,7 @@ fun NewsListScreen(viewModel: NewsViewModel) {
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+
             error != null -> {
                 Text(
                     text = error ?: "오류가 발생했습니다",
@@ -56,12 +58,14 @@ fun NewsListScreen(viewModel: NewsViewModel) {
                         .padding(16.dp)
                 )
             }
+
             newsList.isEmpty() -> {
                 Text(
                     text = "표시할 뉴스가 없습니다",
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
+
             else -> {
                 LazyColumn {
                     items(newsList) { news ->
@@ -88,28 +92,24 @@ fun NewsCard(news: News) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // 이미지가 있으면 이미지 영역 표시
                 if (news.imageUrl != null) {
-                    Box(
+                    RemoteImage(
+                        url = news.imageUrl!!,
                         modifier = Modifier
                             .size(80.dp)
-                            .background(Color.LightGray)
-                    ) {
-                        Text(
-                            text = "이미지",
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                    
+                            .clip(RoundedCornerShape(8.dp)),
+                    )
+
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                
+
                 Column(modifier = Modifier.weight(1f)) {
                     // 설명 텍스트 표시
                     news.description?.let { desc ->
@@ -121,9 +121,9 @@ fun NewsCard(news: News) {
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
                     }
-                    
+
                     Divider(modifier = Modifier.padding(vertical = 4.dp))
-                    
+
                     // 작성자와 발행일 표시
                     Row(
                         modifier = Modifier.fillMaxWidth()
@@ -137,7 +137,7 @@ fun NewsCard(news: News) {
                                 modifier = Modifier.weight(1f)
                             )
                         }
-                        
+
                         news.pubDate?.let { date ->
                             Text(
                                 text = date,

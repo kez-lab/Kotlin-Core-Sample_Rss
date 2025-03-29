@@ -66,6 +66,8 @@ kotlin {
         }
 
         commonMain.dependencies {
+            implementation(projects.shared)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -74,7 +76,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(projects.shared)
+
 
             implementation(libs.kotlinx.rpc.krpc.client)
             implementation(libs.kotlinx.rpc.krpc.ktor.client)
@@ -82,9 +84,12 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
 
             implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.websockets)
 
             implementation(libs.navigation.compose)
+
+            implementation(libs.kamel.image.default)
         }
 
         desktopMain.dependencies {

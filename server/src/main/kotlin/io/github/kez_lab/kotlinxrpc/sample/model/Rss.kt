@@ -140,9 +140,18 @@ fun Rss.toNewsList() = channel.item.map { item ->
     News(
         title = item.title,
         link = item.link,
-        description = item.description,
         pubDate = item.pubDate,
         creator = item.creator,
         imageUrl = item.enclosure?.url,
+        description = decodeHtmlEntities(item.description ?: item.contentEncoded)
     )
+}
+
+fun decodeHtmlEntities(text: String?): String? {
+    return text
+        ?.replace("&lt;", "<")
+        ?.replace("&gt;", ">")
+        ?.replace("&amp;", "&")
+        ?.replace("&quot;", "\"")
+        ?.replace("&#39;", "'")
 }
