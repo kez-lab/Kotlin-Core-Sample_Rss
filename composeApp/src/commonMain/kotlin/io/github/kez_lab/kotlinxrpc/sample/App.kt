@@ -4,14 +4,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import io.github.kez_lab.kotlinxrpc.sample.network.RpcNewsRepository
 import io.github.kez_lab.kotlinxrpc.sample.ui.AppTheme
 import io.github.kez_lab.kotlinxrpc.sample.ui.screen.NewsListScreen
 import io.github.kez_lab.kotlinxrpc.sample.ui.screen.Screen
 
-private val newsViewModel = NewsViewModel()
+private val newsRepository = RpcNewsRepository()
 
 @Composable
 fun App() {
@@ -31,7 +33,7 @@ fun NewsApp() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.NewsScreen.route) {
-                NewsListScreen(viewModel = newsViewModel)
+                NewsListScreen(viewModel = viewModel { NewsViewModel(newsRepository) })
             }
         }
     }

@@ -13,8 +13,7 @@ object AppConfig {
         // 개발 환경 설정
         object Development {
             const val PROTOCOL = "ws" // WebSocket
-            const val HOST = "localhost"
-            const val PORT = 8081
+            const val PORT = 8080
             const val PATH = "/rss"
         }
 
