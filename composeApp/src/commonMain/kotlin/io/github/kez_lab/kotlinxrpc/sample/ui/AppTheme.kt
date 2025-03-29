@@ -9,7 +9,7 @@ import kotlinrpcsample.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun QuizTheme(content: @Composable () -> Unit) {
+fun AppTheme(content: @Composable () -> Unit) {
     val font = Font(Res.font.IBMPlexSansKR_Medium)
     MaterialTheme(
         typography = Typography(

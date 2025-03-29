@@ -28,6 +28,7 @@ ktor {
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
+    implementation(libs.ktor.client.core)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     testImplementation(libs.ktor.server.tests)
@@ -35,8 +36,14 @@ dependencies {
 
     implementation(libs.kotlinx.rpc.krpc.ktor.server)
     implementation(libs.kotlinx.rpc.krpc.serialization.json)
+
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.serialization.kotlinx.xml)
     implementation(libs.ktor.server.websockets.jvm)
     implementation(libs.ktor.server.cors.jvm)
     implementation(libs.ktor.server.host.common.jvm)
 
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.server.content.negotiation)
 }
