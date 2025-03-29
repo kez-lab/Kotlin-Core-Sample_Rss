@@ -27,7 +27,7 @@ fun RemoteImage(
         contentAlignment = Alignment.Center
     ) {
         KamelImage(
-            resource = painterResource,
+            resource = { painterResource },
             contentDescription = description,
             contentScale = contentScale,
             modifier = Modifier.fillMaxSize(),
