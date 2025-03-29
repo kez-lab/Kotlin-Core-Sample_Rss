@@ -28,8 +28,9 @@ class RpcNewsRepository : NewsRepository {
             try {
                 val rpcClient = client.rpc {
                     url {
-                        protocol = URLProtocol.WS
-                        port = 8080
+                        protocol = URLProtocol.WSS
+                        port = 443
+                        host = "kez-lab.site"
                         encodedPath = "/rss"
                     }
                     rpcConfig {
