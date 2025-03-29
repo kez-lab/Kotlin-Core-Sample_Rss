@@ -9,6 +9,7 @@ fun main() {
     document.body!!.style.apply {
         width = "100%"
         margin = "0 auto"
+        maxWidth = "560px"
     }
     ComposeViewport(document.body!!) {
         App()
