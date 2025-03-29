@@ -1,6 +1,5 @@
 package io.github.kez_lab.kotlinxrpc.sample.network
 
-import io.github.kez_lab.kotlinxrpc.sample.AppConfig
 import io.github.kez_lab.kotlinxrpc.sample.model.News
 import io.github.kez_lab.kotlinxrpc.sample.service.NewsService
 import io.ktor.client.HttpClient
@@ -30,7 +29,7 @@ class RpcNewsRepository : NewsRepository {
                     url {
                         protocol = URLProtocol.WSS
                         port = 443
-                        host = "kez-lab.site"
+                        host = "kezlab.site"
                         encodedPath = "/rss"
                     }
                     rpcConfig {
