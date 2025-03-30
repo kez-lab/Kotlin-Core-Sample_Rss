@@ -18,10 +18,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -40,8 +38,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -101,7 +99,7 @@ fun NewsListScreen(viewModel: NewsViewModel) {
                 FloatingActionButton(
                     onClick = {
                         scope.launch {
-                            listState.scrollToItem(0)
+                            listState.animateScrollToItem(0)
                         }
                     },
                     backgroundColor = MaterialTheme.colors.primary
@@ -263,7 +261,7 @@ fun NewsCard(news: News) {
                         .clip(RoundedCornerShape(8.dp))
                 ) {
                     RemoteImage(
-                        url = url,
+                        url = "https://corsproxy.io/?url=$url",
                         description = "뉴스 이미지"
                     )
                 }
