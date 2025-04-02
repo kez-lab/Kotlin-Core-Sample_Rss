@@ -4,10 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class News(
-    val title: String? = null,
-    val link: String? = null,
-    val pubDate: String? = null,
-    val creator: String? = null,
-    val description: String? = null,
-    val imageUrl: String?
+    val title: String,
+    val link: String,
+    val pubDate: String,
+    val creator: String,
+    val description: String,
+    val imageUrl: String? = null,
 )

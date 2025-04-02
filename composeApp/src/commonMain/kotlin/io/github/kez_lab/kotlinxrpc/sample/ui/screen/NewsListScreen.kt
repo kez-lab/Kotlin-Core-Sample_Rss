@@ -269,7 +269,7 @@ fun NewsCard(news: News) {
             }
 
             Text(
-                text = news.title ?: "제목 없음",
+                text = news.title,
                 style = MaterialTheme.typography.h6,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
@@ -277,10 +277,9 @@ fun NewsCard(news: News) {
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            news.description?.let { desc ->
+            if (news.description.isNotEmpty()) {
                 Text(
-                    text = desc,
+                    text = news.description,
                     style = MaterialTheme.typography.body2,
                     maxLines = if (expanded) 10 else 2,
                     overflow = TextOverflow.Ellipsis
@@ -294,36 +293,24 @@ fun NewsCard(news: News) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                news.creator?.let { creator ->
-                    Box(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .background(MaterialTheme.colors.primary, CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = creator.firstOrNull()?.toString() ?: "?",
-                            color = MaterialTheme.colors.onPrimary,
-                            style = MaterialTheme.typography.caption
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .background(MaterialTheme.colors.primary, CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
-                        text = creator,
-                        style = MaterialTheme.typography.caption,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
+                        text = news.creator,
+                        color = MaterialTheme.colors.onPrimary,
+                        style = MaterialTheme.typography.caption
                     )
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                news.pubDate?.let { date ->
+                if (news.pubDate.isNotEmpty()) {
                     Text(
-                        text = formatDateString(date),
+                        text = formatDateString(news.pubDate),
                         style = MaterialTheme.typography.caption,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

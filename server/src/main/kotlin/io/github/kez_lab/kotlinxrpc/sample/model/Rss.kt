@@ -138,12 +138,12 @@ data class Enclosure(
 
 fun Rss.toNewsList() = channel.item.map { item ->
     News(
-        title = item.title,
-        link = item.link,
-        pubDate = item.pubDate,
-        creator = item.creator,
+        title = item.title ?: "제목 없음",
+        link = item.link.orEmpty(),
+        pubDate = item.pubDate.orEmpty(),
+        creator = item.creator ?: "?",
         imageUrl = item.enclosure?.url,
-        description = decodeHtmlEntities(item.description ?: item.contentEncoded)
+        description = decodeHtmlEntities(item.description ?: item.contentEncoded).orEmpty()
     )
 }
 
