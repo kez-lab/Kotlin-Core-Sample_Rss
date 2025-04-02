@@ -37,6 +37,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Refresh
@@ -169,7 +171,11 @@ fun NewsListScreen(viewModel: NewsViewModel) {
                             }
 
                             items(newsList) { news ->
-                                NewsCard(news = news)
+                                NewsCard(
+                                    news = news,
+                                    isLiked = viewModel.isNewsLiked(news.link),
+                                    onLikeClick = { viewModel.likeNews(news.link) }
+                                )
                             }
 
                             item {
@@ -241,7 +247,11 @@ fun NewsTopAppBar(onRefreshClick: () -> Unit) {
 }
 
 @Composable
-fun NewsCard(news: News) {
+fun NewsCard(
+    news: News,
+    isLiked: Boolean = false,
+    onLikeClick: () -> Unit = {}
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
@@ -314,6 +324,31 @@ fun NewsCard(news: News) {
                         style = MaterialTheme.typography.caption,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(
+                        onClick = onLikeClick,
+                        modifier = Modifier.size(28.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = "좋아요",
+                            tint = if (isLiked) MaterialTheme.colors.primary else MaterialTheme.colors.onSurface.copy(
+                                alpha = 0.6f
+                            )
+                        )
+                    }
+
+                    Text(
+                        text = "${news.likeCount}",
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f)
                     )
                 }
             }

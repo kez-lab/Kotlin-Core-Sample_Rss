@@ -7,4 +7,5 @@ import kotlinx.rpc.annotations.Rpc
 @Rpc
 interface NewsService : RemoteService {
     suspend fun getLatestNews(): List<News>
+    suspend fun likeNews(link: String): News
 }

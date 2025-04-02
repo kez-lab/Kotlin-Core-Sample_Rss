@@ -18,36 +18,56 @@ import kotlinx.rpc.withService
  */
 class RpcNewsRepository : NewsRepository {
 
-    override suspend fun fetchNews(): Result<List<News>> {
+    private suspend fun <T> executeNewsService(
+        block: suspend (NewsService) -> T,
+        errorMessage: String
+    ): Result<T> {
         return withContext(Dispatchers.Default) {
-            val client = HttpClient {
-                installKrpc()
-            }
+            val client = createHttpClient()
 
             try {
-                val rpcClient = client.rpc {
-                    url {
-                        protocol = URLProtocol.WSS
-                        port = 443
-                        host = "kezlab.site"
-                        encodedPath = "/rss"
-                    }
-                    rpcConfig {
-                        serialization {
-                            json()
-                        }
-                    }
-                }
+                val rpcClient = createRpcClient(client)
 
                 val newsService = rpcClient.withService<NewsService>()
-                val latestNews = newsService.getLatestNews()
-
-                Result.success(latestNews)
+                val result = block(newsService)
+                Result.success(result)
             } catch (e: Exception) {
-                println("뉴스 데이터 가져오기 실패: ${e.message}")
+                println("$errorMessage: ${e.message}")
                 Result.failure(e)
             } finally {
                 client.close()
+            }
+        }
+    }
+
+    override suspend fun fetchNews(): Result<List<News>> {
+        return executeNewsService(
+            block = { newsService -> newsService.getLatestNews() },
+            errorMessage = "뉴스 데이터 가져오기 실패"
+        )
+    }
+
+    override suspend fun likeNews(link: String): Result<News> {
+        return executeNewsService(
+            block = { newsService -> newsService.likeNews(link) },
+            errorMessage = "뉴스 좋아요 처리 실패"
+        )
+    }
+
+    private fun createHttpClient() = HttpClient {
+        installKrpc()
+    }
+
+    private suspend fun createRpcClient(client: HttpClient) = client.rpc {
+        url {
+            protocol = URLProtocol.WSS
+            port = 443
+            host = "kezlab.site"
+            encodedPath = "/rss"
+        }
+        rpcConfig {
+            serialization {
+                json()
             }
         }
     }

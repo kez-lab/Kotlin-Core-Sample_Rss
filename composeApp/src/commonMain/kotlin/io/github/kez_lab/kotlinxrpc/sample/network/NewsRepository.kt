@@ -7,4 +7,5 @@ import io.github.kez_lab.kotlinxrpc.sample.model.News
  */
 interface NewsRepository {
     suspend fun fetchNews(): Result<List<News>>
+    suspend fun likeNews(link: String): Result<News>
 }

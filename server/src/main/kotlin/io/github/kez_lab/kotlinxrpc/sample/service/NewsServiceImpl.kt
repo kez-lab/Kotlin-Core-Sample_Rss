@@ -12,4 +12,8 @@ class NewsServiceImpl(
     override suspend fun getLatestNews(): List<News> {
         return newsRepository.getCachedNews()
     }
+
+    override suspend fun likeNews(link: String): News {
+        return newsRepository.incrementLike(link)
+    }
 }

@@ -10,4 +10,5 @@ data class News(
     val creator: String,
     val description: String,
     val imageUrl: String? = null,
+    val likeCount: Int = 0,
 )
