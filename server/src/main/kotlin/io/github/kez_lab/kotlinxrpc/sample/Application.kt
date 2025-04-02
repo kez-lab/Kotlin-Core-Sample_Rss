@@ -1,8 +1,8 @@
 package io.github.kez_lab.kotlinxrpc.sample
 
 import io.github.kez_lab.kotlinxrpc.sample.model.News
-import io.github.kez_lab.kotlinxrpc.sample.model.Rss
-import io.github.kez_lab.kotlinxrpc.sample.model.toNewsList
+import io.github.kez_lab.kotlinxrpc.sample.repository.NewsRepository
+import io.github.kez_lab.kotlinxrpc.sample.repository.NewsRepositoryImpl
 import io.github.kez_lab.kotlinxrpc.sample.service.NewsService
 import io.github.kez_lab.kotlinxrpc.sample.service.NewsServiceImpl
 import io.ktor.client.HttpClient
@@ -32,14 +32,17 @@ import kotlinx.rpc.krpc.ktor.server.Krpc
 import kotlinx.rpc.krpc.ktor.server.rpc
 import kotlinx.rpc.krpc.serialization.json.json
 import kotlinx.serialization.json.Json
-import nl.adaptivity.xmlutil.serialization.XML
 import java.util.concurrent.atomic.AtomicReference
 
-val rssCache = AtomicReference<List<News>>(emptyList())
+// NewsRepository를 전역 인스턴스로 생성
+private lateinit var newsRepository: NewsRepository
 
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
 fun Application.module() {
+    // NewsRepository 초기화
+    newsRepository = NewsRepositoryImpl(log)
+
     installCORS()
     scheduleRssRefresh()
     configureRPC()
@@ -56,7 +59,7 @@ fun Application.configureRPC() {
                 }
             }
             registerService<NewsService> { coroutineContext ->
-                NewsServiceImpl(coroutineContext)
+                NewsServiceImpl(newsRepository, coroutineContext)
             }
         }
     }
@@ -90,7 +93,7 @@ fun Application.configureRouting() {
             call.respondText("Hello, World!")
         }
         get("/rss-sample") {
-            call.respond(rssCache.get())
+            call.respond(newsRepository.getCachedNews())
         }
     }
 }
@@ -98,26 +101,10 @@ fun Application.configureRouting() {
 fun Application.scheduleRssRefresh() {
     val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    suspend fun fetchRss() {
-        val client = HttpClient(CIO)
-        try {
-            val response = client.get("https://www.yonhapnewstv.co.kr/browse/feed/")
-            val rawXml = response.bodyAsText()
-            val rss = XML.decodeFromString<Rss>(rawXml)
-            log.info("RSS 피드 수신 완료 (${response.bodyAsText().length} bytes)")
-            rssCache.set(rss.toNewsList())
-            log.info("✅ RSS 피드 갱신 완료 (${rss.channel.item.size}건)")
-        } catch (e: Exception) {
-            log.error("❌ RSS 피드 갱신 실패", e)
-        } finally {
-            client.close()
-        }
-    }
-
     // 2시간마다 실행
     scope.launch {
         while (isActive) {
-            fetchRss()
+            newsRepository.refreshRss()
             delay(60 * 60 * 1000 * 2) // 2시간
         }
     }
