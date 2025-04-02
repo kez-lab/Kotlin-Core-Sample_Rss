@@ -300,7 +300,7 @@ fun NewsCard(news: News) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = news.creator,
+                        text = news.creator.firstOrNull()?.toString() ?: "?",
                         color = MaterialTheme.colors.onPrimary,
                         style = MaterialTheme.typography.caption
                     )
